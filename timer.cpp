@@ -1,14 +1,12 @@
 #ifdef _WIN32
 #include <Windows.h>
-#else
-#ifdef __MACH__
+#elif __MACH__
 #include <time.h>
 #include <mach/clock.h>
 #include <mach/mach.h>
 #else
 #include <time.h>
-#endif // __MACH__
-#endif // _WIN32
+#endif
 #include "Core/Utils.h"
 
 double get_time_milliseconds()
@@ -24,8 +22,7 @@ double get_time_milliseconds()
 	LARGE_INTEGER li;
 	QueryPerformanceCounter(&li);
 	return (double)li.QuadPart / freq;
-#else
-#ifdef __MACH__
+#elif __MACH__
 	struct timespec t;
 	clock_serv_t cclock;
 	mach_timespec_t mts;
@@ -42,6 +39,5 @@ double get_time_milliseconds()
 	if (clock_gettime(CLOCK_MONOTONIC, &t) != 0)
 			die("clock failure");
 	return (double)t.tv_sec * 1000.0 + (double)t.tv_nsec / 1000000.0;
-#endif // __MACH__
-#endif // _WIN32
+#endif
 }
