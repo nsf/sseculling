@@ -37,7 +37,7 @@ double get_time_milliseconds()
 #else
     struct timespec t;
     if (clock_gettime(CLOCK_MONOTONIC, &t) != 0)
-            die("clock failure");
+        die("clock failure");
     return (double)t.tv_sec * 1000.0 + (double)t.tv_nsec / 1000000.0;
 #endif
 }
