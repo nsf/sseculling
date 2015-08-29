@@ -87,7 +87,7 @@ static void sse_cull(const Frustum &f)
     //   dot(-p.n, s.center) - p.d > s.radius
     // it's equivalent to:
     //   dot(p.n, s.center) + p.d < -s.radius
-    // but no need to negate radius
+    // but no need to negate sphere radius
 
     const __m128 plane_components[8] = {
         simd_set(-f.planes[0].n.x, -f.planes[1].n.x, -f.planes[2].n.x, -f.planes[3].n.x),
@@ -126,11 +126,11 @@ static void sse_cull(const Frustum &f)
 
         // Shuffle and extract the result:
         // 1. movehl(r, r) does this (we're interested in 2 lower floats):
-        //    aaaa bbbb cccc dddd -> cccc dddd cccc dddd
+        //    a b c d -> c d c d
         // 2. then we OR it with the existing value (ignoring 2 upper floats)
-        //    aaaa bbbb | cccc dddd = AAAA BBBB
+        //    a b | c d = A B
         // 3. and then we OR it again ignoring all but 1 lowest float:
-        //    AAAA | BBBB = RESULT
+        //    A | B = R
         // Result is written in the lowest float.
         r = _mm_or_ps(r, _mm_movehl_ps(r, r));
         r = _mm_or_ps(r, simd_splat_y(r));
