@@ -91,8 +91,8 @@ static void sse_cull_data_prefetch(Data *data, const Frustum &f)
     for (int i = 0, n = data->chunks.length(); i < n; i++) {
         if (i != n-1) {
             // Tried all hints there, NTA works best for very fragmented data.
-            _mm_prefetch(data->chunks.data()[i+1]->spheres.data(), _MM_HINT_NTA);
-            _mm_prefetch(data->chunks.data()[i+1]->results.data(), _MM_HINT_NTA);
+            _mm_prefetch(reinterpret_cast<const char*>(data->chunks.data()[i+1]->spheres.data()), _MM_HINT_NTA);
+            _mm_prefetch(reinterpret_cast<const char*>(data->chunks.data()[i+1]->results.data()), _MM_HINT_NTA);
         }
         const auto &c = data->chunks.data()[i];
         sse_cull(c->results, c->spheres, f);
