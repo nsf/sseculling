@@ -35,10 +35,35 @@ Example output on my machine (`i5-3470`, `linux`, `x86_64`, `gcc 5.2`):
 ```
 [nsf @ build]$ ./sseculling
 Data size: 80x80x80 (512000 objects, 8192000 bytes)
-'Naive culling / structured data' done in 10 runs, average: 3.404757ms
-'Naive culling / random data' done in 10 runs, average: 8.190406ms
-'SSE culling / structured data' done in 10 runs, average: 2.191884ms
-'SSE culling / random data' done in 10 runs, average: 2.203724ms
+'Naive culling / structured data' done in 10 runs, average: 3.394078ms
+'Naive culling / random data' done in 10 runs, average: 8.155710ms
+'SSE culling / structured data' done in 10 runs, average: 2.353994ms
+'SSE culling / random data' done in 10 runs, average: 2.345242ms
+----------------------------------------
+'SSE culling / chunks / structured data / 512 per chunk (w/o  prefetch)' done in 10 runs, average: 2.525645ms
+'SSE culling / chunks / random data     / 512 per chunk (w/o  prefetch)' done in 10 runs, average: 2.531772ms
+'SSE culling / chunks / random data     / 512 per chunk (with prefetch)' done in 10 runs, average: 2.502262ms
+----------------------------------------
+'SSE culling / chunks / structured data / 256 per chunk (w/o  prefetch)' done in 10 runs, average: 2.645812ms
+'SSE culling / chunks / random data     / 256 per chunk (w/o  prefetch)' done in 10 runs, average: 2.656828ms
+'SSE culling / chunks / random data     / 256 per chunk (with prefetch)' done in 10 runs, average: 2.605833ms
+----------------------------------------
+'SSE culling / chunks / structured data / 128 per chunk (w/o  prefetch)' done in 10 runs, average: 2.743400ms
+'SSE culling / chunks / random data     / 128 per chunk (w/o  prefetch)' done in 10 runs, average: 2.889656ms
+'SSE culling / chunks / random data     / 128 per chunk (with prefetch)' done in 10 runs, average: 2.806787ms
+----------------------------------------
+'SSE culling / chunks / structured data /  64 per chunk (w/o  prefetch)' done in 10 runs, average: 2.819107ms
+'SSE culling / chunks / random data     /  64 per chunk (w/o  prefetch)' done in 10 runs, average: 3.470009ms
+'SSE culling / chunks / random data     /  64 per chunk (with prefetch)' done in 10 runs, average: 3.370178ms
+----------------------------------------
+'SSE culling / chunks / structured data /  32 per chunk (w/o  prefetch)' done in 10 runs, average: 2.648684ms
+'SSE culling / chunks / random data     /  32 per chunk (w/o  prefetch)' done in 10 runs, average: 4.479559ms
+'SSE culling / chunks / random data     /  32 per chunk (with prefetch)' done in 10 runs, average: 4.120239ms
+----------------------------------------
+'SSE culling / chunks / structured data /   8 per chunk (w/o  prefetch)' done in 10 runs, average: 3.001685ms
+'SSE culling / chunks / random data     /   8 per chunk (w/o  prefetch)' done in 10 runs, average: 9.516912ms
+'SSE culling / chunks / random data     /   8 per chunk (with prefetch)' done in 10 runs, average: 5.933696ms
+
 ```
 
 Few comments on results:
@@ -46,3 +71,7 @@ Few comments on results:
 1. Naive algorithm can fool you into thinking that it's almost as fast as SSE one, that's due to branch prediction friendly data. If you shuffle the data however, the truth comes out.
 
 2. SSE version is roughly 4 times faster than naive version.
+
+3. If we break data into chunks and randomize them, you can clearly see cache miss effects. The effects disappear starting from 128 elements per chunk.
+
+4. On very fragmented data using `_mm_prefetch` instruction helps quite a bit.
