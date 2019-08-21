@@ -1,6 +1,7 @@
 #include "Common.h"
 #include "Timer.h"
 #include "Core/Vector.h"
+#include <stdio.h>
 
 void parse_args(Config *config, int argc, char **argv)
 {
